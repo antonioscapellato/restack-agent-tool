@@ -1,0 +1,33 @@
+[project]
+name = "pdf_ocr"
+version = "0.0.1"
+description = "A simple example to OCR a pdf"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.12,<3.13"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.10.6",
+    "watchfiles>=1.0.4",
+    "python-dotenv==1.0.1",
+    "openai>=1.61.0",
+    "python-multipart==0.0.19",
+    "numpy==2.2.0",
+    "pillow==11.0.0",
+    "python-doctr[torch]==0.10.0",
+    "requests==2.32.3",
+    "restack-ai>=0.0.81",]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+
+[tool.hatch.build.targets.sdist]
+include = ["src"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
