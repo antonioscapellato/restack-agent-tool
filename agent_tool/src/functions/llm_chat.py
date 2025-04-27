@@ -21,6 +21,7 @@ class Message(BaseModel):
     content: str
     tool_call_id: str | None = None
     tool_calls: list[ChatCompletionMessageToolCall] | None = None
+    task: str | None = None
 
 
 class LlmChatInput(BaseModel):

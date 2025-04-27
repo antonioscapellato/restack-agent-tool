@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+
 from pydantic import BaseModel
 from restack_ai.agent import (
     NonRetryableError,
@@ -73,6 +74,7 @@ class AgentChatToolFunctions:
                     Message(
                         role="assistant",
                         content=f"Thank you for your request. An operator will reach out to you. <operator>{assistant_content}</operator>",
+                        task="forward to human"
                     )
                 )
 
