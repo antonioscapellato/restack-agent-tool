@@ -72,8 +72,7 @@ class AgentChatToolFunctions:
                 self.messages.append(
                     Message(
                         role="assistant",
-                        content="Thank you for your request. An operator will reach out to you.",
-                        task=f"{assistant_content}"
+                        content=f"Thank you for your request. An operator will reach out to you. <operator>{assistant_content}</operator>",
                     )
                 )
 
