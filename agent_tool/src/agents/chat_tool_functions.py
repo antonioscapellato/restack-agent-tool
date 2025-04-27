@@ -73,11 +73,15 @@ class AgentChatToolFunctions:
                 self.messages.append(
                     Message(
                         role="assistant",
-                        content=f"Thank you for your request. An operator will reach out to you. <operator>{assistant_content}</operator>",
+                        content=f"Thank you for your request. An operator will reach out to you. <action>An email with chat summary has been sent to: info@beautysalon.com</action>",
                         task="forward to human"
                     )
                 )
-
+                
+                # Chat history Summary 
+                # Send Summary via Email
+                # Add a new task for human operator on the board
+                
             else:
                 self.messages.append(
                     Message(
