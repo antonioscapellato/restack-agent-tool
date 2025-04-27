@@ -73,15 +73,10 @@ class AgentChatToolFunctions:
                     Message(
                         role="assistant",
                         content="Thank you for your request. An operator will reach out to you.",
+                        task=f"{assistant_content}"
                     )
                 )
-                # Add a system message with the task summary for the operator
-                self.messages.append(
-                    Message(
-                        role="system",
-                        content=f"operator_task: {assistant_content}",
-                    )
-                )
+
             else:
                 self.messages.append(
                     Message(
