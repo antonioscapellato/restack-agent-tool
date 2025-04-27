@@ -28,8 +28,8 @@ class EndEvent(BaseModel):
 class AgentChatToolFunctions:
     def __init__(self) -> None:
         self.end = False
-        self.messages = 
-            [Message(
+        self.messages = [
+            Message(
                 role="system",
                 content="""You are Tinkerbell, a cheerful assistant from Renasanz Salon, located at Grunberger Strasse 24, Berlin. 
                         Analyze the user's request carefully. 
@@ -38,7 +38,8 @@ class AgentChatToolFunctions:
 
                         If you can assist, respond warmly and directly, reflecting the friendly spirit of the salon. 
                         If the request is too complex or needs a human touch, kindly reply with 'forward to human'."""
-            )]
+            )
+        ]
 
     @agent.event
     async def messages(self, messages_event: MessagesEvent) -> list[Message]:
