@@ -37,6 +37,10 @@ class AgentChatToolFunctions:
                         Open hours: 10AM-6PM
 
                         If you can assist, respond warmly and directly, reflecting the friendly spirit of the salon. 
+
+                        If the user is asking for booking an appointment
+                        After asking info about the appointment reply with 'forward to human'.
+
                         If the request is too complex or needs a human touch, kindly reply with 'forward to human'."""
             )
         ]
@@ -61,6 +65,7 @@ class AgentChatToolFunctions:
             log.info(f"completion: {completion}")
 
             assistant_content = completion.choices[0].message.content or ""
+
 
             # Check if the assistant wants to forward to human
             if "forward to human" in assistant_content.lower():
