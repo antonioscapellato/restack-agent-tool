@@ -9,16 +9,10 @@ from restack_ai.agent import (
 )
 
 with import_functions():
-    from openai import pydantic_function_tool
-
     from src.functions.llm_chat import (
         LlmChatInput,
         Message,
         llm_chat,
-    )
-    from src.functions.lookup_sales import (
-        LookupSalesInput,
-        lookup_sales,
     )
 
 
@@ -50,19 +44,11 @@ If the request is too complex or needs a human touch, kindly reply with 'forward
         log.info(f"Received messages: {messages_event.messages}")
         self.messages.extend(messages_event.messages)
 
-        tools = [
-            pydantic_function_tool(
-                model=LookupSalesInput,
-                name=lookup_sales.__name__,
-                description="Lookup sales for a given category",
-            ),
-        ]
-
         try:
             completion = await agent.step(
                 function=llm_chat,
                 function_input=LlmChatInput(
-                    messages=self.messages, tools=tools
+                    messages=self.messages
                 ),
                 start_to_close_timeout=timedelta(seconds=120),
             )
@@ -73,7 +59,6 @@ If the request is too complex or needs a human touch, kindly reply with 'forward
             log.info(f"completion: {completion}")
 
             assistant_content = completion.choices[0].message.content or ""
-            tool_calls = completion.choices[0].message.tool_calls
 
             # Check if the assistant wants to forward to human
             if "forward to human" in assistant_content.lower():
@@ -88,63 +73,8 @@ If the request is too complex or needs a human touch, kindly reply with 'forward
                     Message(
                         role="assistant",
                         content=assistant_content,
-                        tool_calls=tool_calls,
                     )
                 )
-
-                if tool_calls:
-                    for tool_call in tool_calls:
-                        log.info(f"tool_call: {tool_call}")
-
-                        name = tool_call.function.name
-
-                        match name:
-                            case lookup_sales.__name__:
-                                args = LookupSalesInput.model_validate_json(
-                                    tool_call.function.arguments
-                                )
-
-                                log.info(f"calling {name} with args: {args}")
-
-                                try:
-                                    result = await agent.step(
-                                        function=lookup_sales,
-                                        function_input=LookupSalesInput(category=args.category),
-                                        start_to_close_timeout=timedelta(seconds=120),
-                                    )
-                                except Exception as e:
-                                    error_message = f"Error during lookup_sales: {e}"
-                                    raise NonRetryableError(error_message) from e
-                                else:
-                                    self.messages.append(
-                                        Message(
-                                            role="tool",
-                                            tool_call_id=tool_call.id,
-                                            content=str(result),
-                                        )
-                                    )
-
-                                    try:
-                                        completion_with_tool_call = await agent.step(
-                                            function=llm_chat,
-                                            function_input=LlmChatInput(
-                                                messages=self.messages
-                                            ),
-                                            start_to_close_timeout=timedelta(seconds=120),
-                                        )
-                                    except Exception as e:
-                                        error_message = f"Error during llm_chat: {e}"
-                                        raise NonRetryableError(error_message) from e
-                                    else:
-                                        self.messages.append(
-                                            Message(
-                                                role="assistant",
-                                                content=completion_with_tool_call.choices[
-                                                    0
-                                                ].message.content
-                                                or "",
-                                            )
-                                        )
 
             return self.messages
 
