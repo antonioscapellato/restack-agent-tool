@@ -8,13 +8,12 @@ from watchfiles import run_process
 from src.agents.chat_tool_functions import AgentChatToolFunctions
 from src.client import client
 from src.functions.llm_chat import llm_chat
-from src.functions.lookup_sales import lookup_sales
 
 
 async def main() -> None:
     await client.start_service(
         agents=[AgentChatToolFunctions],
-        functions=[lookup_sales, llm_chat],
+        functions=[llm_chat],
     )
 
 
